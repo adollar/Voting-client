@@ -47,5 +47,17 @@ describe('Results component', () => {
         Simulate.click(ReactDOM.findDOMNode(component.refs.next));
 
         expect(clicked).to.equal(true);
-    })
+    });
+
+    it('рисует победителя', () => {
+        const component = renderIntoDocument(
+            <Results
+                pair={List.of('Train', 'Days')}
+                tally={Map()}
+                winner='Train'
+            />
+        );
+        const winner = ReactDOM.findDOMNode(component.refs.winner);
+        expect(winner.textContent).to.contain('Train');
+    });
 });
