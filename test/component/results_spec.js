@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {expect} from 'chai';
 import {
     List,
@@ -7,7 +8,8 @@ import {
 import {Results} from "../../src/components/results";
 import {
     renderIntoDocument,
-    scryRenderedDOMComponentsWithClass
+    scryRenderedDOMComponentsWithClass,
+    Simulate
 } from 'react-dom/test-utils';
 
 
@@ -21,11 +23,29 @@ describe('Results component', () => {
 
         const entries = scryRenderedDOMComponentsWithClass(component, 'entry');
         const [train, days] = entries.map(e => e.textContent);
-        
+
         expect(entries.length).to.equal(2);
         expect(train).to.contains('Train');
         expect(train).to.contains('5');
         expect(days).to.contains('Days');
         expect(days).to.contains('0');
+    });
+
+    it('вызывает колбек при нажатии Next', () => {
+        let clicked = false;
+        const next = () => clicked = true;
+
+        const pair = List.of('Train', 'Days');
+        const component = renderIntoDocument(
+            <Results
+                pair={pair}
+                tally={Map()}
+                next={next}
+            />
+        );
+
+        Simulate.click(ReactDOM.findDOMNode(component.refs.next));
+
+        expect(clicked).to.equal(true);
     })
 });
