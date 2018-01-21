@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react'
 import {Winner} from "./winner";
+import {connect} from 'react-redux';
 
 export class Results extends PureComponent
 {
@@ -18,9 +19,7 @@ export class Results extends PureComponent
     render() {
         return (
             <div>
-                {this.props.winner ? 
-                 <Winner ref="winner" winner={this.props.winner}/> : 
-                 <div className="results">
+                {this.props.winner ? <Winner ref="winner" winner={this.props.winner}/> : <div className="results">
                     <div className="tally">
                         {this.getPair().map((entry) => (
                             <div key={entry} className="entry">
@@ -40,3 +39,13 @@ export class Results extends PureComponent
         )
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        pair: state.getIn('vote', 'pair'),
+        tally: state.getIn('vote', 'tally'),
+        pair: state.get('winner'),
+    }
+}
+
+export const ResultsContainer = connect(mapStateToProps)(Results);
