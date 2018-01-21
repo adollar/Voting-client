@@ -72,4 +72,70 @@ describe('Reducer', () => {
             }
         }))
     });
+
+    it('обрабатывает событие VOTE с помощью havVoted аттрибута', () => {
+        const state = fromJS({
+            vote: {
+                pair: ['Tran', 'Days'],
+                tally: {Tran: 1}
+            }
+        });
+
+        const action = {type: 'VOTE', 'entry': 'Tran'};
+        const nextState = reducer(state, action);
+
+        expect(nextState).to.equal(fromJS({
+            vote: {
+                pair: ['Tran', 'Days'],
+                tally: {Tran: 1}
+            },
+            hasVoted: 'Tran'
+        }))
+    });
+
+    it('если запись не правильна - не назначает hasVoted для VOTE action', () => {
+        const state = fromJS({
+            vote: {
+                pair: ['Tran', 'Days'],
+                tally: {Tran: 1}
+            }
+        });
+
+        const action = {type: 'VOTE', 'entry': 'Blabla'};
+        const nextState = reducer(state, action);
+
+        expect(nextState).to.equal(fromJS({
+            vote: {
+                pair: ['Tran', 'Days'],
+                tally: {Tran: 1}
+            },
+        }))
+    });
+
+    it('если пара изменилась то убираем hasVoted', () => {
+        const state = fromJS({
+            vote: {
+                pair: ['Tran', 'Days'],
+                tally: {Tran: 1}
+            },
+            hasVoted: 'Tran'
+
+        });
+
+        const action = {
+            type: 'SET_STATE',
+            state: {
+                vote: {
+                    pair: ['Blabla', 'Yoyo']
+                }
+            }
+        };
+        const nextState = reducer(state, action);
+
+        expect(nextState).to.equal(fromJS({
+            vote: {
+                pair: ['Blabla', 'Yoyo'],
+            },
+        }))
+    });
 });
